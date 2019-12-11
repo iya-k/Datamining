@@ -26,13 +26,13 @@ def tree_classifier(x_train, x_test, y_train, y_test):
 	# Create Decision Tree classifer object
     #clf = DecisionTreeClassifier()
 
-    clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+    model = DecisionTreeClassifier(criterion="entropy", max_depth=3)
 
     # Train Decision Tree Classifer
-    clf = clf.fit(x_train,y_train)
+    model = model.fit(x_train,y_train)
 
     #Predict the response for test dataset
-    y_pred = clf.predict(x_test)
+    y_pred = model.predict(x_test)
     
     print("***************************************** ")
     # Model Accuracy, how often is the classifier correct?
@@ -40,7 +40,7 @@ def tree_classifier(x_train, x_test, y_train, y_test):
 
     print("mse: ",mean_squared_error(y_test, y_pred))
     print("mae: ",mean_absolute_error(y_test, y_pred))
-    graphic(clf)
+    graphic(model)
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeRegressor
@@ -50,7 +50,7 @@ def cross_validation_classifier(x_train, x_test, y_train, y_test):
     pgrid = {"max_depth": [1, 2, 3, 4, 5, 6, 7],
       "min_samples_split": [2, 3, 5, 10, 15, 20]}
 
-    grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid=pgrid, scoring='neg_mean_squared_error', cv=10)
+    grid_search = GridSearchCV(DecisionTreeClassifier(criterion = "gini"), param_grid=pgrid, scoring='neg_mean_squared_error', cv=10)
     grid_search.fit(x_train, y_train)
     
     y_pred = grid_search.best_estimator_.predict(x_test)
@@ -70,13 +70,6 @@ import pydotplus
 
 def graphic(clf):
 
-    """
-    dot_data = tree.export_graphviz(clf, out_file=None,
-            feature_names=feature_cols,
-            class_names=['0','1'],
-            filled=True, rounded=True,
-            special_characters=True)
-    """	
     with open("iris.dot", 'w') as f:
     	f = tree.export_graphviz(clf, out_file=f)
 #Ne marche pas pour le moment
